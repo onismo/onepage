@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<!--
+=====================================================================
+  ONE-PAGE WEBSITE TEMPLATE
+=====================================================================
+  HOW THIS FILE IS ORGANIZED
+  - Everything lives on this one page. Each section has an "id"
+    (e.g. id="about"). The menu links point to those ids (href="#about").
+  - Look for comments starting with "EDIT:" — those mark the things
+    you'll usually change for a new business.
+  - Styling comes from µCSS (https://mucss.org), loaded online from
+    unpkg. Nothing to install: open this file in a browser and it works.
+  - Images: some load from Unsplash (online), some from the local
+    "assets/images/" folder next to this file. Keep that folder with
+    index.html when you copy or upload the site.
+
+  FOLDER LAYOUT
+    index.html            <- this file
+    assets/
+      images/
+        favicon.svg       <- browser tab icon
+        logo.svg          <- logo in the menu bar
+        hero.jpg          <- background photo of the top banner (hero)
+        about.jpg         <- photo in the About section
+
+  TO ADD A NEW SECTION
+    1. Copy any <section> block below and give it a new id.
+    2. Add a matching link in the menu: <li><a href="#new-id">Name</a></li>
+=====================================================================
+-->
+
+<!-- EDIT: LANGUAGE of the site ("en" = English, "es" = Spanish, "fr" = French...). -->
+<!-- TIP: Add data-theme="dark" to force dark mode, or data-theme="light" to force light mode.
+     Leave it out to follow the visitor's device setting. Example: <html lang="en" data-theme="dark"> -->
+<html lang="en">
+
+<head>
+  <!-- Character set and mobile scaling. Leave these two lines as they are. -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- EDIT: TITLE, appears on top of browser and in search results. -->
+  <title>Pixel &amp; Pine Studio | Web Design</title>
+
+  <!-- EDIT: DESCRIPTION, short summary shown by Google under your title (about 150 characters). -->
+  <meta name="description" content="Pixel & Pine Studio designs fast, mobile-friendly websites for small businesses. Clean design, clear words, and sites you can update yourself.">
+
+  <!-- EDIT: SOCIAL SHARING, what appears when the link is shared on Facebook, LinkedIn, Slack, etc. -->
+  <meta property="og:title" content="Pixel & Pine Studio | Web Design">
+  <meta property="og:description" content="Fast, mobile-friendly websites for small businesses.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=1200&q=80">
+  <meta property="og:type" content="website">
+
+  <!-- EDIT: FAVICON, appears on browser tab. Replace assets/images/favicon.svg (or point to a .png / .ico). -->
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+
+  <!--
+    EDIT: COLOR THEME. µCSS ships one file per color. Change "mu.blue.css" to any of:
+      mu.amber.css   mu.azure.css   mu.blue.css    mu.cyan.css    mu.fuchsia.css
+      mu.green.css   mu.grey.css    mu.indigo.css  mu.jade.css    mu.lime.css
+      mu.orange.css  mu.pink.css    mu.pumpkin.css mu.purple.css  mu.red.css
+      mu.sand.css    mu.slate.css   mu.violet.css  mu.yellow.css  mu.zinc.css
+    Preview the themes at https://mucss.org/themes
+    "@1" means: always use the latest version 1.x (gets fixes, no breaking changes).
+  -->
+  <link rel="stylesheet" href="https://unpkg.com/@digicreon/mucss@1/dist/mu.blue.css">
+
+  <!--
+    SMALL CUSTOM TWEAKS. µCSS does almost everything; these few rules
+    only cover what a one-pager needs on top of it.
+  -->
+  <style>
+    /* Smooth scrolling when a menu link is clicked.
+       scroll-padding-top stops the sticky menu bar from covering section titles.
+       If your menu bar is taller, increase 4.5rem. */
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 4.5rem;
+    }
+
+    /* Space above and below every content section. */
+    main > section {
+      padding: 3.5rem 0;
+    }
+
+    /* Short intro line under each section title. */
+    .section-intro {
+      max-width: 40rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Logo in the menu bar: keeps it a sensible size. */
+    .brand img {
+      height: 2rem;
+      width: auto;
+      vertical-align: middle;
+      margin-right: 0.5rem;
+    }
+
+    /* HERO WITH A BACKGROUND PHOTO
+       - The photo itself is set on the hero <section> in the HTML
+         (look for "EDIT: HERO BACKGROUND IMAGE"), so you rarely need to touch this.
+       - The dark tint keeps white text readable on any photo.
+         0.55 = 55% dark. Raise it (e.g. 0.7) for busy photos, lower it (e.g. 0.35) for calm ones.
+       - Height: 60% of the screen on phones, 70% from tablets up.
+         "min-height" means the hero grows if the text needs more room.
+         (svh = "small viewport height", it doesn't jump when the phone's address bar hides.) */
+    .hero.hero-image {
+      --hero-tint: rgba(0, 0, 0, 0.55);
+      --hero-text: #fff;
+      color: #fff;
+      background:
+        linear-gradient(var(--hero-tint), var(--hero-tint)),
+        var(--hero-image) center / cover no-repeat;
+      min-height: 60vh;   /* fallback for older browsers */
+      min-height: 60svh;
+      display: flex;
+      align-items: center;      /* centers the text vertically */
+    }
+    .hero.hero-image > .container {
+      width: 100%;
+    }
+    @media (min-width: 768px) {
+      .hero.hero-image {
+        min-height: 70vh;
+        min-height: 70svh;
+      }
+    }
+    /* Slight shadow behind the hero text for extra readability. */
+    .hero.hero-image :is(h1, p) {
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Pinned menu bar: solid background so page content doesn't show
+       through, a soft shadow, and sits above everything else. */
+    .site-header {
+      z-index: 100;
+      background: var(--mu-background-color);
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Keeps the "Contact" button text readable inside the phone menu. */
+    .navbar-menu .btn-primary {
+      color: var(--mu-primary-inverse);
+    }
+
+    /* Images never overflow their box, and get soft rounded corners. */
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 0.5rem;
+    }
+
+    /* Portfolio images: all the same shape, cropped neatly. */
+    .portfolio img {
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      width: 100%;
+    }
+
+    /* Cards in a row stretch to the same height. */
+    .row > [class*="col-"] > article {
+      height: 100%;
+    }
+
+    /* The grid has no built-in vertical gap: this spaces cards when they stack on mobile. */
+    .row > [class*="col-"] {
+      margin-bottom: 1.5rem;
+    }
+
+    /* Big emoji icons on the service cards. */
+    .icon {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    /* Contact list without bullets. */
+    .contact-list {
+      list-style: none;
+      padding: 0;
+    }
+    .contact-list li {
+      list-style: none;
+      margin-bottom: 1rem;
+    }
+
+    /* Footer text centered and a bit smaller. */
+    body > footer {
+      text-align: center;
+      padding: 2rem 0;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =================================================================
+       HEADER + NAVIGATION MENU
+       - "sticky-top" on <header> keeps the menu bar pinned to the top of
+         the screen while scrolling, so every section is one tap away.
+         Remove class="sticky-top" if you want the menu to scroll away.
+       - On phones (under 640px wide) the links fold into a ☰ button.
+         This works with CSS only, no JavaScript.
+       ================================================================= -->
+  <header class="sticky-top site-header">
+    <nav class="container" aria-label="Main navigation">
+
+      <!-- EDIT: LOGO / BUSINESS NAME, top left. Clicking it scrolls back to the top. -->
+      <ul>
+        <li>
+          <a href="#top" class="brand">
+            <img src="assets/images/logo.svg" alt="" width="32" height="32">
+            <strong>Pixel &amp; Pine</strong>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Burger button for phones. Leave these two lines as they are.
+           (The id and the "for" must match.) -->
+      <input type="checkbox" id="main-nav" class="navbar-toggle" hidden>
+      <label for="main-nav" class="navbar-burger" aria-label="Menu">&#9776;</label>
+
+      <!-- EDIT: MENU LINKS. Each href="#..." must match a section id further down.
+           Remove a line to hide a section from the menu; reorder lines to reorder the menu. -->
+      <ul class="navbar-menu">
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#portfolio">Work</a></li>
+        <li><a href="#testimonials">Clients</a></li>
+        <!-- "btn btn-primary" makes the last link look like a button. -->
+        <li><a href="#contact" class="btn btn-primary">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+
+  <!-- =================================================================
+       HERO SECTION, the big banner at the top of the page.
+       - id="top" is where the logo link scrolls back to.
+       - "hero-image" turns on the background photo with a dark tint.
+         Remove "hero-image" (and the style="..." part) to go back to a
+         plain color background.
+       - "hero-primary" sets the button text color. You can change it to
+         hero-secondary, hero-accent, hero-success... (with no photo, it's
+         also the background color).
+       - Add "hero-start" to align the text to the left.
+       ================================================================= -->
+  <!-- EDIT: HERO BACKGROUND IMAGE. Replace assets/images/hero.jpg with your own photo
+       (keep the same name, or change the path below).
+       Tip: use a wide photo, about 1920 x 1080 pixels and under 300 KB, so it loads fast.
+       An online image works too: style="--hero-image: url('https://...')" -->
+  <section id="top" class="hero hero-primary hero-image"
+           style="--hero-image: url('assets/images/hero.jpg');">
+    <div class="container">
+
+      <!-- EDIT: HEADLINE, the main message. Keep it short. -->
+      <h1>Websites that work as hard as you do</h1>
+
+      <!-- EDIT: TAGLINE, one sentence explaining what you offer. -->
+      <p class="hero-tagline">Clean, fast, mobile-friendly websites for small businesses.</p>
+
+      <!-- EDIT: SUBTITLE (optional), extra detail. Delete the line if not needed. -->
+      <p class="hero-subtitle">Small studio, big attention to detail.</p>
+
+      <!-- EDIT: BADGES (optional), short selling points. Delete the whole <div> if not needed. -->
+      <div class="hero-badges">
+        <span class="badge badge-pill">Mobile first</span>
+        <span class="badge badge-pill">Fast loading</span>
+        <span class="badge badge-pill">Easy to update</span>
+      </div>
+
+      <!-- EDIT: BUTTONS, where you want visitors to go next. -->
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#contact">Start a project</a>
+        <a class="btn btn-secondary" href="#portfolio">See our work</a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- All main content sits inside <main class="container"> so it stays a readable width. -->
+  <main class="container">
+
+    <!-- =================================================================
+         ABOUT SECTION
+         Layout: photo and text side by side on tablets and up,
+         stacked on phones (col-12 = full width, col-md-6 = half from 768px).
+         ================================================================= -->
+    <section id="about">
+      <div class="row">
+
+        <!-- EDIT: ABOUT PHOTO. This one is a LOCAL file: replace assets/images/about.jpg
+             with your own photo (keep the same name, or change the src).
+             "alt" describes the image for screen readers and Google. -->
+        <div class="col-12 col-md-6">
+          <img src="assets/images/about.jpg" alt="The Pixel & Pine studio desk" width="800" height="600" loading="lazy">
+        </div>
+
+        <!-- EDIT: ABOUT TEXT -->
+        <div class="col-12 col-md-6">
+          <h2>About us</h2>
+          <p>
+            Pixel &amp; Pine is a small web design studio. We build simple, good-looking
+            websites that load fast on any phone and are easy for you to keep up to date.
+          </p>
+          <p>
+            No jargon, no bloated page builders. Just a clear plan, honest pricing,
+            and a site you're proud to share.
+          </p>
+          <!-- EDIT: QUICK FACTS (optional). Add or remove <li> lines. -->
+          <ul>
+            <li>10+ years designing for the web</li>
+            <li>120+ small business sites launched</li>
+            <li>Friendly support after launch</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- =================================================================
+         SERVICES SECTION
+         Each service is a card (<article>).
+         Layout: 1 per row on phones, 2 on tablets, 3 on desktops.
+         TO ADD A SERVICE: copy one <div class="col-..."> ... </div> block.
+         CARD COLORS: add class="card-primary" (or card-secondary, card-info,
+         card-success...) to an <article> for a tinted card.
+         ================================================================= -->
+    <section id="services">
+
+      <!-- EDIT: SECTION TITLE + INTRO -->
+      <h2>Services</h2>
+      <p class="section-intro">Everything you need to get online and look professional.</p>
+
+      <div class="row">
+
+        <!-- EDIT: SERVICE 1 (icon can be any emoji) -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <article>
+            <p class="icon" aria-hidden="true">🎨</p>
+            <h3>Web design</h3>
+            <p>Custom designs that match your brand and guide visitors toward calling, booking, or buying.</p>
+          </article>
+        </div>
+
+        <!-- EDIT: SERVICE 2 -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <article>
+            <p class="icon" aria-hidden="true">📱</p>
+            <h3>Mobile-first builds</h3>
+            <p>Most visitors arrive on a phone. We design for small screens first, then scale up.</p>
+          </article>
+        </div>
+
+        <!-- EDIT: SERVICE 3 -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <article>
+            <p class="icon" aria-hidden="true">⚡</p>
+            <h3>Speed &amp; SEO basics</h3>
+            <p>Lightweight pages, sensible titles and descriptions, so Google and your visitors both find you fast.</p>
+          </article>
+        </div>
+
+        <!-- EDIT: SERVICE 4 -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <article>
+            <p class="icon" aria-hidden="true">✍️</p>
+            <h3>Copywriting</h3>
+            <p>Clear, friendly words that explain what you do and why people should choose you.</p>
+          </article>
+        </div>
+
+        <!-- EDIT: SERVICE 5 -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <article>
+            <p class="icon" aria-hidden="true">🔄</p>
+            <h3>Redesigns</h3>
+            <p>Give an old, slow site a fresh look without losing the content and search rankings you've built.</p>
+          </article>
+        </div>
+
+        <!-- EDIT: SERVICE 6 -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <article>
+            <p class="icon" aria-hidden="true">🛠️</p>
+            <h3>Care plans</h3>
+            <p>Monthly updates, backups and small content changes, so you can focus on running your business.</p>
+          </article>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- =================================================================
+         PORTFOLIO / GALLERY SECTION
+         Each project is a <figure> with an image and a caption.
+         These images load ONLINE from Unsplash. To use your own:
+           - online: paste another image URL in src="..."
+           - local:  put the file in assets/images/ and use src="assets/images/your-file.jpg"
+         "?w=800&q=80" asks Unsplash for an 800px-wide, compressed image (faster).
+         Layout: 1 per row on phones, 2 on tablets, 3 on desktops.
+         ================================================================= -->
+    <section id="portfolio" class="portfolio">
+
+      <!-- EDIT: SECTION TITLE + INTRO -->
+      <h2>Recent work</h2>
+      <p class="section-intro">A few projects we're proud of.</p>
+
+      <div class="row">
+
+        <!-- EDIT: PROJECT 1 -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <figure>
+            <img src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&q=80"
+                 alt="Laptop on a desk showing a bakery website" width="800" height="600" loading="lazy">
+            <figcaption><strong>Main Street Bakery</strong>: online menu and pre-orders</figcaption>
+          </figure>
+        </div>
+
+        <!-- EDIT: PROJECT 2 -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <figure>
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80"
+                 alt="Laptop showing charts for an accounting firm site" width="800" height="600" loading="lazy">
+            <figcaption><strong>Ledger &amp; Co.</strong>: accounting firm website</figcaption>
+          </figure>
+        </div>
+
+        <!-- EDIT: PROJECT 3 -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <figure>
+            <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80"
+                 alt="Laptop with code on screen" width="800" height="600" loading="lazy">
+            <figcaption><strong>Fix-It Plumbing</strong>: redesign and speed boost</figcaption>
+          </figure>
+        </div>
+
+        <!-- EDIT: PROJECT 4 (this one uses the LOCAL image, as an example of a local file) -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <figure>
+            <img src="assets/images/about.jpg"
+                 alt="Studio desk with design sketches" width="800" height="600" loading="lazy">
+            <figcaption><strong>Green Leaf Yoga</strong>: class schedule and booking</figcaption>
+          </figure>
+        </div>
+
+        <!-- EDIT: PROJECT 5 -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <figure>
+            <img src="https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=800&q=80"
+                 alt="Laptop and notebook on a wooden desk" width="800" height="600" loading="lazy">
+            <figcaption><strong>Riverside Realty</strong>: property listings site</figcaption>
+          </figure>
+        </div>
+
+        <!-- EDIT: PROJECT 6 -->
+        <div class="col-12 col-md-6 col-lg-4">
+          <figure>
+            <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80"
+                 alt="Screen with website code" width="800" height="600" loading="lazy">
+            <figcaption><strong>Northside Dental</strong>: patient info pages</figcaption>
+          </figure>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- =================================================================
+         TESTIMONIALS SECTION
+         Each quote is a card with the client's words and name.
+         TO ADD ONE: copy a <div class="col-..."> ... </div> block.
+         Layout: 1 per row on phones, 3 side by side on desktops.
+         ================================================================= -->
+    <section id="testimonials">
+
+      <!-- EDIT: SECTION TITLE + INTRO -->
+      <h2>What clients say</h2>
+      <p class="section-intro">Kind words from people we've worked with.</p>
+
+      <div class="row">
+
+        <!-- EDIT: TESTIMONIAL 1 -->
+        <div class="col-12 col-lg-4">
+          <article>
+            <blockquote>
+              "Our old site was slow and confusing. The new one is simple, and online orders doubled in two months."
+            </blockquote>
+            <footer><strong>Maria L.</strong>, Main Street Bakery</footer>
+          </article>
+        </div>
+
+        <!-- EDIT: TESTIMONIAL 2 -->
+        <div class="col-12 col-lg-4">
+          <article>
+            <blockquote>
+              "They explained everything in plain English and delivered on time. I can update my own hours now!"
+            </blockquote>
+            <footer><strong>James R.</strong>, Fix-It Plumbing</footer>
+          </article>
+        </div>
+
+        <!-- EDIT: TESTIMONIAL 3 -->
+        <div class="col-12 col-lg-4">
+          <article>
+            <blockquote>
+              "Clients regularly tell us how professional our website looks. Worth every penny."
+            </blockquote>
+            <footer><strong>Priya S.</strong>, Ledger &amp; Co.</footer>
+          </article>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- =================================================================
+         CONTACT SECTION
+         No form: just contact details. Links open the right app:
+           mailto:  -> opens the visitor's email app
+           tel:     -> starts a phone call on mobile
+           maps     -> opens Google Maps at your address
+         ================================================================= -->
+    <section id="contact">
+
+      <!-- EDIT: SECTION TITLE + INTRO -->
+      <h2>Get in touch</h2>
+      <p class="section-intro">Tell us about your project. We usually reply within one business day.</p>
+
+      <div class="row">
+
+        <!-- Left column: contact details -->
+        <div class="col-12 col-md-6">
+          <ul class="contact-list">
+
+            <!-- EDIT: EMAIL. Change the address in BOTH places (after mailto: and the visible text).
+                 "?subject=" pre-fills the email subject; spaces are written as %20. -->
+            <li>
+              📧 <strong>Email</strong><br>
+              <a href="mailto:hello@example.com?subject=New%20website%20project">hello@example.com</a>
+            </li>
+
+            <!-- EDIT: PHONE. In tel: use digits only with country code (+1 for US). -->
+            <li>
+              📞 <strong>Phone</strong><br>
+              <a href="tel:+15555550123">(555) 555-0123</a>
+            </li>
+
+            <!-- EDIT: ADDRESS. Update the visible address AND the "query=" part of the link
+                 (spaces become +). -->
+            <li>
+              📍 <strong>Studio</strong><br>
+              123 Main Street, Springfield, USA<br>
+              <a href="https://www.google.com/maps/search/?api=1&amp;query=123+Main+Street+Springfield"
+                 target="_blank" rel="noopener">View on Google Maps ↗</a>
+            </li>
+
+            <!-- EDIT: OPENING HOURS (optional). Delete this <li> if not needed. -->
+            <li>
+              🕘 <strong>Hours</strong><br>
+              Monday to Friday, 9am to 5pm
+            </li>
+          </ul>
+        </div>
+
+        <!-- Right column: call-to-action card -->
+        <div class="col-12 col-md-6">
+          <!-- EDIT: CALL TO ACTION card. "card-primary" tints it with the theme color. -->
+          <article class="card-primary">
+            <header><strong>Ready to start?</strong></header>
+            <p>Send a short note with what your business does and what you'd like your website to do. We'll reply with ideas and a quote.</p>
+            <!-- EDIT: same email as above. -->
+            <a class="btn btn-primary" href="mailto:hello@example.com?subject=New%20website%20project">Email us</a>
+            <a class="btn btn-outline btn-primary" href="tel:+15555550123">Call us</a>
+          </article>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- =================================================================
+       FOOTER, bottom of every page.
+       ================================================================= -->
+  <footer>
+    <div class="container">
+
+      <!-- EDIT: SOCIAL LINKS. Replace the # with your profile URLs, or delete a link. -->
+      <p>
+        <a href="#" target="_blank" rel="noopener">Instagram</a> ·
+        <a href="#" target="_blank" rel="noopener">LinkedIn</a> ·
+        <a href="#" target="_blank" rel="noopener">Facebook</a>
+      </p>
+
+      <!-- EDIT: COPYRIGHT LINE, business name and year. -->
+      <p>&copy; 2026 Pixel &amp; Pine Studio. All rights reserved.</p>
+
+      <!-- Credit (optional). Delete if you prefer. -->
+      <p><small>Styled with <a href="https://mucss.org" target="_blank" rel="noopener">µCSS</a>.
+        Photos from <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a>.</small></p>
+
+      <!-- Back to top link -->
+      <p><a href="#top">↑ Back to top</a></p>
+    </div>
+  </footer>
+
+
+  <!--
+    OPTIONAL: CLOSE THE PHONE MENU AFTER A LINK IS TAPPED.
+    The menu is CSS-only, so on phones it stays open after tapping a link
+    (the page still scrolls to the right section underneath).
+    If you'd like it to close automatically, delete the two comment lines
+    marked "DELETE THIS LINE" to switch on this tiny script.
+  -->
+  <!-- DELETE THIS LINE
+  <script>
+    document.querySelectorAll('.navbar-menu a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        document.getElementById('main-nav').checked = false;
+      });
+    });
+  </script>
+  DELETE THIS LINE -->
+
+</body>
+</html>
